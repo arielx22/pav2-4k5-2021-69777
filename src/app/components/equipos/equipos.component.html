@@ -1,0 +1,180 @@
+<div class='tituloPagina'>
+{{Titulo}} <small>{{TituloAccionABMC[AccionABMC]}}</small>
+</div>
+
+<div class="row justify-content-center" *ngIf="AccionABMC== 'L'">
+  <button type="button" class="btn btn-primary" (click)="Buscar()">
+    <span class="fas fa-search"> </span> Buscar
+  </button>
+  &nbsp;
+  <button type="button" class="btn btn-primary" (click)="Agregar()">
+    <span class="fas fa-plus"> </span>
+    Agregar
+  </button>
+</div>
+
+<div id="divTablaResultados" *ngIf="AccionABMC == 'L' && equipos?.length > 0">
+  <table class="table table-hover table-sm table-bordered table-striped">
+    <thead>
+      <tr>
+        <th class="text-center">Nombre</th>
+        <th class="text-center">Tipo</th>
+        <th class="text-center">Fecha de Alta</th>
+        <th class="text-center">Activo</th>
+        <th class="text-center text-nowrap">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- -->
+      <tr *ngFor="let equipo of equipos">
+        <td>{{equipo.Nombre | uppercase}}</td>
+        <td>{{equipo.Tipo| uppercase}}</td>
+        <td class="text-right">{{equipo.FechaAlta| date:'dd/MM/yyyy'}}</td>
+        <td>{{equipo.Activo ? 'SI' : 'NO'}}</td>
+        <td class="text-center text-nowrap">
+          <button class="btn btn-sm btn-outline-primary" title="Modificar" (click)="Modificar(equipo)">
+                    <i class="fas fa-pencil-alt"></i>
+          </button>
+        </td>        
+       
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<form name="FormRegistro" [formGroup]='FormRegistro' *ngIf="AccionABMC != 'L'">
+  <div class="container-fluid">
+    
+    <fieldset [disabled]="AccionABMC==='C'">
+      
+      
+      <div class="row">
+        <div class="col-sm-4 col-md-3 offset-md-1">
+          <label class="col-form-label" for=" Nombre">Nombre<span
+                    class="text-danger">*</span>:</label>
+        </div>
+
+        <div class="col-sm-8 col-md-6">
+          <input
+           type="text" 
+           class="form-control" 
+           formControlName="Nombre"
+           [ngClass]="{'is-invalid':(FormRegistro.controls.Nombre.touched || submitted) 
+           && FormRegistro.controls.Nombre.errors}"/>
+       
+          <div class="validacion" *ngIf="(FormRegistro.controls.Nombre.touched || submitted) && FormRegistro.controls.Nombre.errors?.required">
+              Dato requerido.
+          </div>
+
+          <div class="validacion" 
+            *ngIf="(FormRegistro.controls.Nombre.touched || submitted) && (FormRegistro.controls.Nombre.errors?.minlength || FormRegistro.controls.Nombre.errors?.maxlength) ">
+            Dato texto, 3 a 40 caracteres.
+          </div>
+
+        </div>
+
+      </div>
+      
+
+      
+      
+      <div class="row">
+        <div class="col-sm-4 col-md-3 offset-md-1">
+          <label class="col-form-label" for="Tipo">Tipo<span
+                    class="text-danger">*</span>:</label>
+        </div>
+  
+        <div class="col-sm-8 col-md-6">
+          <input
+           type="text" 
+           class="form-control" 
+           formControlName="Tipo"
+           [ngClass]="{'is-invalid':(FormRegistro.controls.Tipo.touched 
+           || submitted) 
+           && FormRegistro.controls.Tipo.errors}"/>
+      
+          <div class="validacion" *ngIf="  (FormRegistro.controls.Tipo.touched || submitted) &&   FormRegistro.controls.Tipo.errors?.required">
+              Dato requerido.
+          </div>
+  
+          <div class="validacion" 
+            *ngIf="(FormRegistro.controls.Tipo.touched || submitted) && (FormRegistro.controls.Tipo.errors?.minlength ||   FormRegistro.controls.Tipo.errors?.maxlength) ">
+            Dato texto, 1 caracter.
+          </div>
+  
+        </div>
+
+
+  
+      </div>
+
+      
+      <div class="row">
+        <div class="col-sm-4 col-md-3 offset-md-1">
+          <label class="col-form-label">Fecha de alta<span
+                    class="text-danger">*</span>:
+          </label>
+        </div>
+        <div class="col-sm-8 col-md-6">
+          <input class="form-control" formControlName="FechaAlta"
+                           name="FechaAlta"
+                           [ngClass]="{'is-invalid': (FormRegistro.controls.FechaAlta.touched || submitted)  
+            && FormRegistro.controls.FechaAlta.errors}" />
+
+          <div class="validacion" *ngIf="(FormRegistro.controls.FechaAlta.touched || submitted) 
+                       && FormRegistro.controls.FechaAlta.errors?.required">
+            Dato requerido.
+          </div>
+          <div class="validacion" *ngIf="(FormRegistro.controls.FechaAlta.touched || submitted) 
+                       && FormRegistro.controls.FechaAlta.errors?.pattern">
+            Dato fecha, formato dd/mm/aaaa.
+          </div>
+        </div>
+      </div>
+      
+         
+      <div class="row">
+        <div class="col-sm-4 col-md-3 offset-md-1">
+          <label class="col-form-label" for="Activo">Activo:</label>
+        </div>
+        <div class="col-sm-8 col-md-6">
+          
+          <select class="form-control" name="Activo"    formControlName="Activo" [attr.disabled]="true">
+            <option *ngFor="let opt of OpcionesActivo"  [ngValue]="opt.Id">
+                        ‌{{ opt.Nombre }}
+            </option>            
+          </select>
+       
+        </div>
+      
+
+      </div>
+      
+    </fieldset>
+    
+
+    <!-- Botones Grabar, Cancelar/Volver' -->
+    <hr>
+    <div class="row justify-content-center botones">
+      <button type="button" 
+      *ngIf="AccionABMC!=='C'" 
+      class="btn btn-primary" 
+      (click)="Grabar()">
+            <i class="fas fa-check"></i> Grabar
+        </button>
+      &nbsp;
+      <button type="button" class="btn btn-warning" (click)="Volver()">
+            <i class="fas fa-undo"></i> {{AccionABMC=='C' ? 'Volver' : 'Cancelar'}}
+      </button>
+    </div>
+    
+    
+
+    <!--texto: Revisar los datos ingresados...-->
+    <div *ngIf="submitted && FormRegistro.invalid" class="row alert alert-danger mensajesAlert">
+      <i class="fas fa-exclamation-sign"></i>{{Mensajes['RD']}}
+    </div>
+
+  </div>
+  
+</form>
